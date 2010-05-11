@@ -57,6 +57,7 @@
             
             [CPApp sendEvent:[CPEvent mouseEventWithType:CPLeftMouseDown location:[theWindow convertBridgeToBase:CGPointMake(x, y)]
                 modifierFlags:0 timestamp:0 windowNumber:[theWindow windowNumber] context:nil eventNumber:-1 clickCount:1 pressure:0]];
+            [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode]; 
             
             if (document.addEventListener)
             {
@@ -91,6 +92,7 @@
             
             [CPApp sendEvent:[CPEvent mouseEventWithType:CPLeftMouseUp location:[theWindow convertBridgeToBase:CGPointMake(x, y)]
                modifierFlags:0 timestamp:0 windowNumber:[theWindow windowNumber] context:nil eventNumber:-1 clickCount:1 pressure:0]];
+            [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode]; 
         }
         
         _mouseMovedCallback = function(aDOMEvent)
