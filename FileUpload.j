@@ -10,10 +10,6 @@
 @import <Foundation/CPValue.j>
 @import <Foundation/CPException.j>
 
-var UPLOAD_IFRAME_PREFIX = "UPLOAD_IFRAME_",
-    UPLOAD_FORM_PREFIX = "UPLOAD_FORM_",
-    UPLOAD_INPUT_PREFIX = "UPLOAD_INPUT_";
-
 @implementation UploadButton : CPButton
 {
     DOMElement      _DOMIFrameElement;
@@ -99,8 +95,6 @@ var UPLOAD_IFRAME_PREFIX = "UPLOAD_IFRAME_",
         
         _mouseMovedCallback = function(aDOMEvent)
         {
-            //ASSERT(mouse is down)
-            
             aDOMEvent = aDOMEvent || window.event;
             
             var x = aDOMEvent.clientX,
@@ -314,15 +308,3 @@ var UPLOAD_IFRAME_PREFIX = "UPLOAD_IFRAME_",
 }
 
 @end
-
-function _CPGUID()
-{
-    var g = "";
-    
-    for(var i = 0; i < 32; i++)
-        g += Math.floor(Math.random() * 0xF).toString(0xF);
-        
-    return g;
-}
-
-
