@@ -1,0 +1,15 @@
+This small project is a fork of the following gist pastebin code:
+
+http://gist.github.com/11652
+
+It supplies a class to perform file upload using the Cappuccino framework:
+
+http://cappuccino.org/
+
+It also includes a small sample application that, along with the appropriate
+Cappuccino Frameworks directory, will demonstrate the use of the File Upload
+button.
+
+See the github page for additional documentation:
+
+http://github.com/MCF/FileUpload
