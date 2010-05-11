@@ -6,9 +6,9 @@
 // Copyright 2005 - 2008, 280 North, Inc. All rights reserved.
 //
 
-import <Foundation/CPObject.j>
-import <Foundation/CPValue.j>
-import <Foundation/CPException.j>
+@import <Foundation/CPObject.j>
+@import <Foundation/CPValue.j>
+@import <Foundation/CPException.j>
 
 var UPLOAD_IFRAME_PREFIX = "UPLOAD_IFRAME_",
     UPLOAD_FORM_PREFIX = "UPLOAD_FORM_",
