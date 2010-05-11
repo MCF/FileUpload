@@ -10,14 +10,15 @@ It also includes a small sample application that, along with the appropriate
 Cappuccino Frameworks directory, will demonstrate the use of the File Upload
 button.
 
-Copyright/License
+*Copyright/License*
 
 Any changes made to FileUpload.j after the initial commit in this repository
 are released to the public domain.  For information about copyright/licensing
-for the bulk of the code you must refer to the original gist link noted at the
-head of this file and to the original copyright statement in FileUpload.j.
+for the bulk of the code in FileUpload.j you must refer to the original gist
+link noted at the head of this file and to the original copyright statement in
+FileUpload.j.
 
-Additional Information
+*Additional Information*
 
 See the github page and the wiki for additional documentation:
 
