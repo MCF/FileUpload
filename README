@@ -1,4 +1,4 @@
-This small project is a fork of the following gist pastebin code:
+This small project is a fork of the following gist code:
 
 http://gist.github.com/11652
 
@@ -17,6 +17,19 @@ are released to the public domain.  For information about copyright/licensing
 for the bulk of the code in FileUpload.j you must refer to the original gist
 link noted at the head of this file and to the original copyright statement in
 FileUpload.j.
+
+*Running the Sample Application*
+
+Some kind of web-server must be used to both serve the sample application and
+receive the POST event once a file is selected.  The domain name for both the
+files served and the POST must be identical or the code will not work correctly
+(iframe cross-domain issues are encountered and the response from the POST
+cannot be read by the FileUpload code).
+
+For example the current sample will post to localhost on port 2345 to a
+directory file_upload.  Thus the sample application must be served from
+http://localhost:2345/... as well.  Change the setURL call in AppController.j
+if using a different domain.
 
 *Additional Information*
 
