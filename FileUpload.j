@@ -296,17 +296,4 @@
         [_delegate uploadButtonDidBeginUpload:self];
 }
 
-- (void)disposeOfEvent:(CPEvent)anEvent
-{
-    if ([anEvent type] == CPLeftMouseDown)
-        [CPApp setTarget:self selector:@selector(disposeOfEvent:) forNextEventMatchingMask:CPLeftMouseUpMask untilDate:nil inMode:nil dequeue:YES];
-}
-
-- (void)mouseDown:(CPEvent)anEvent
-{
-    [CPApp setTarget:self selector:@selector(disposeOfEvent:) forNextEventMatchingMask:CPLeftMouseDownMask untilDate:nil inMode:nil dequeue:YES];
-
-    [super mouseDown:anEvent];
-}
-
 @end
