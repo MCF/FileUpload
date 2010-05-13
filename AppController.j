@@ -22,6 +22,7 @@
     var fileUploadButton = [[UploadButton alloc] initWithFrame:CGRectMake(10, 10, 100, 24)];
     [fileUploadButton setTitle:"Upload File"];
     [fileUploadButton setBordered:YES];
+    [fileUploadButton allowsMultipleFiles:YES];
     [fileUploadButton setURL:"http://localhost:2345/file_upload/"];
     [fileUploadButton setDelegate:self];
     [contentView addSubview:fileUploadButton];
@@ -29,7 +30,7 @@
     [theWindow orderFront:self];
 }
 
--(void) uploadButton:(UploadButton)button didChangeSelection:(CPString)selection
+-(void) uploadButton:(UploadButton)button didChangeSelection:(CPArray)selection
 {
     console.log("Selection has been made: " + selection);
 

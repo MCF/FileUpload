@@ -132,7 +132,7 @@
                        
         _fileUploadElement.onchange = function()
         {
-            [self uploadSelectionDidChange: _fileUploadElement.value];
+            [self uploadSelectionDidChange: [self selection]];
         };
         
         _uploadForm.appendChild(_fileUploadElement);
@@ -145,6 +145,16 @@
     }
     
     return self;
+}
+
+-(void)allowsMultipleFiles:(BOOL)allowsMultipleFiles
+{
+    _fileUploadElement.removeAttribute("multiple");  // Start as single file.
+
+    if(allowsMultipleFiles)
+    {
+        _fileUploadElement.setAttribute("multiple", "true");
+    }
 }
 
 - (void)setDelegate:(id)aDelegate
@@ -162,15 +172,26 @@
     _uploadForm.action = aURL;
 }
 
-- (void)uploadSelectionDidChange:(CPString)selection
+- (void)uploadSelectionDidChange:(CPArray)selection
 {
     if ([_delegate respondsToSelector:@selector(uploadButton:didChangeSelection:)])
         [_delegate uploadButton: self didChangeSelection: selection];
 }
 
-- (CPString)selection
+- (CPArray)selection
 {
-    return _fileUploadElement.value;
+    var selection = [CPArray  array];
+
+    // For non-multiple input: _fileUploadElement.value;
+    console.log(_fileUploadElement.files.length);
+    console.log(_fileUploadElement.files);
+    for(var i = 0; i < _fileUploadElement.files.length; i++)
+    {
+        console.log(_fileUploadElement.files.item(i));
+        [selection addObject:_fileUploadElement.files.item(i).fileName];
+    }
+
+    return selection;
 }
 
 - (void)resetSelection
