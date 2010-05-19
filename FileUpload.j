@@ -182,13 +182,16 @@
 {
     var selection = [CPArray  array];
 
-    // For non-multiple input: _fileUploadElement.value;
-    console.log(_fileUploadElement.files.length);
-    console.log(_fileUploadElement.files);
-    for(var i = 0; i < _fileUploadElement.files.length; i++)
+    if(_fileUploadElement.files)
     {
-        console.log(_fileUploadElement.files.item(i));
-        [selection addObject:_fileUploadElement.files.item(i).fileName];
+        for(var i = 0; i < _fileUploadElement.files.length; i++)
+        {
+            [selection addObject:_fileUploadElement.files.item(i).fileName];
+        }
+    }
+    else
+    {
+        [selection addObject:_fileUploadElement.value];
     }
 
     return selection;

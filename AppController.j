@@ -21,7 +21,7 @@
                                                 styleMask:CPBorderlessBridgeWindowMask];
     var contentView = [theWindow contentView];
 
-    var urlString = "http://192.168.0.102:2345/file_upload/";
+    var urlString = "http://localhost:2345/file_upload/";
 
     var fileUploadButton = [[UploadButton alloc] initWithFrame:CGRectMake(10, 15, 100, 24)];
     [fileUploadButton setTitle:"Upload File"];
