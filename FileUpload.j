@@ -45,7 +45,7 @@
         _fileUploadElement = document.createElement("input");
         
         _fileUploadElement.type = "file";
-        _fileUploadElement.name = "file";
+        _fileUploadElement.name = "file[]";
         
         _fileUploadElement.onmousedown = function(aDOMEvent)
         {    
