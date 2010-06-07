@@ -20,6 +20,16 @@ FileUpload.j.
 
 *Running the Sample Application*
 
+You must get a copy of the Cappuccino "Frameworks" directory and place it in
+the top level directory of your copy of this project.  Different branches of
+this project support different versions of Cappuccino (see the wiki
+http://wiki.github.com/MCF/FileUpload/).  For information about downloading and/or
+installing different versions of Cappuccino see:
+
+http://cappuccino.org/download/
+http://cappuccino.org/nightly/
+http://wiki.github.com/280north/cappuccino/
+
 Some kind of web-server must be used to both serve the sample application and
 receive the POST event once a file is selected.  The domain name for both the
 files served and the POST must be identical or the code will not work correctly
