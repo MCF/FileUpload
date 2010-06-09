@@ -147,6 +147,31 @@
     return self;
 }
 
+// Override setEnabled.  Remove the _fileUploadElement when disabling, add it
+// back in when enabling.
+- (void)setEnabled:(BOOL)isEnabled
+{
+    if(! isEnabled)
+    {
+        if([self isEnabled])
+        {
+            // Remove file upload element to disable.
+            [self _removeUploadFormElements];
+        }
+    }
+    else
+    {
+        if(! [self isEnabled])
+        {
+            // Add file upload element to enable.
+            _uploadForm.appendChild(_fileUploadElement);
+        }
+    }
+
+    [super setEnabled:isEnabled];
+}
+
+
 -(void)allowsMultipleFiles:(BOOL)allowsMultipleFiles
 {
     _fileUploadElement.removeAttribute("multiple");  // Start as single file.
@@ -235,9 +260,7 @@
     _uploadForm.target = "FRAME_"+(new Date());
 
     //remove existing parameters
-    var index = _uploadForm.childNodes.length;
-    while(index--)
-        _uploadForm.removeChild(_uploadForm.childNodes[index]);    
+    [self _removeUploadFormElements];
     
     //append the parameters to the form
     var keys = [_parameters allKeys];
@@ -318,6 +341,13 @@
     
     if ([_delegate respondsToSelector:@selector(uploadButtonDidBeginUpload:)])
         [_delegate uploadButtonDidBeginUpload:self];
+}
+
+- (void)_removeUploadFormElements
+{
+    var index = _uploadForm.childNodes.length;
+    while(index--)
+        _uploadForm.removeChild(_uploadForm.childNodes[index]);    
 }
 
 @end
