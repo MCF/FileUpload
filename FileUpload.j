@@ -10,6 +10,17 @@
 @import <Foundation/CPValue.j>
 @import <Foundation/CPException.j>
 
+// Determine which browser is being used.
+
+IsBrowser = { 
+    IE:     (!!window.attachEvent) && !window.opera, 
+    Opera:  !!window.opera, 
+    WebKit: navigator.userAgent.indexOf('AppleWebKit/') > -1, 
+    Gecko:  navigator.userAgent.indexOf('Gecko') > -1 && 
+            navigator.userAgent.indexOf('KHTML') == -1 
+}; 
+
+
 @implementation UploadButton : CPButton
 {
     DOMElement      _DOMIFrameElement;
@@ -37,7 +48,7 @@
         _uploadForm.method = "POST";
         _uploadForm.action = "#";
 
-        if(document.attachEvent)
+        if(IsBrowser.IE)
             _uploadForm.encoding = "multipart/form-data";
         else
             _uploadForm.enctype = "multipart/form-data";
@@ -120,15 +131,25 @@
         
         _fileUploadElement.style.fontSize = "1000px";
         
-        if (document.attachEvent)
+        if (IsBrowser.IE)
         {
             _fileUploadElement.style.position = "relative";
             _fileUploadElement.style.top = "-10px";
             _fileUploadElement.style.left = "-10px";
             _fileUploadElement.style.width = "1px";
         }
+        else if (IsBrowser.Opera)
+        {
+            _fileUploadElement.style.position = "relative";
+            _fileUploadElement.style.top = "0px";
+            _fileUploadElement.style.left = "0px";
+            _fileUploadElement.style.width = "100%";
+            _fileUploadElement.style.height = "100%";
+        }
         else
+        {
             _fileUploadElement.style.cssFloat = "right";    
+        }
                        
         _fileUploadElement.onchange = function()
         {
@@ -284,7 +305,7 @@
         _DOMIFrameElement = nil;   
     }
     
-    if(window.attachEvent)
+    if(IsBrowser.IE)
     {
         _DOMIFrameElement = document.createElement("<iframe id=\"" + _uploadForm.target + "\" name=\"" + _uploadForm.target + "\" />");    
         
@@ -314,7 +335,7 @@
 
             [self uploadDidFinishWithResponse: responseText];
             
-            window.setTimeout(function(){
+            window.parent.setTimeout(function(){
                 document.body.removeChild(_DOMIFrameElement);
                 _DOMIFrameElement.onload = nil;
                 _DOMIFrameElement = nil;
@@ -326,7 +347,7 @@
         }
     }    
         
-    if (window.attachEvent)
+    if(IsBrowser.IE)
     {
         _DOMIFrameElement.onreadystatechange = function() 
         {
