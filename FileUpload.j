@@ -229,10 +229,8 @@
     {
         var i = 0;
         var length = _fileUploadElement.files.length;
-        console.log("length = " + length);
         for(; i < length; i++)
         {
-            console.log("for i: " + i + " filename: " + _fileUploadElement.files.item(i).fileName);
             [selection addObject:_fileUploadElement.files.item(i).fileName];
         }
     }
