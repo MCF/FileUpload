@@ -10,17 +10,6 @@
 @import <Foundation/CPValue.j>
 @import <Foundation/CPException.j>
 
-// Determine which browser is being used.
-
-IsBrowser = { 
-    IE:     (!!window.attachEvent) && !window.opera, 
-    Opera:  !!window.opera, 
-    WebKit: navigator.userAgent.indexOf('AppleWebKit/') > -1, 
-    Gecko:  navigator.userAgent.indexOf('Gecko') > -1 && 
-            navigator.userAgent.indexOf('KHTML') == -1 
-}; 
-
-
 @implementation UploadButton : CPButton
 {
     DOMElement      _DOMIFrameElement;
@@ -33,6 +22,7 @@ IsBrowser = {
     id              _delegate;
         
     CPDictionary    _parameters;
+    var             _isBrowser;
 }
 
 - (id)initWithFrame:(CGRect)aFrame
@@ -41,14 +31,21 @@ IsBrowser = {
     
     if (self)
     {
-        var hash = [self hash];
-        
+        // Determine which browser is being used.
+
+        _isBrowser = {
+            IE:     !!(window.attachEvent && !window.opera),
+            Opera:  !!window.opera,
+            WebKit: navigator.userAgent.indexOf('AppleWebKit/') > -1,
+            Gecko:  navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('KHTML') == -1
+        };
+
         _uploadForm = document.createElement("form");
         
         _uploadForm.method = "POST";
         _uploadForm.action = "#";
 
-        if(IsBrowser.IE)
+        if(_isBrowser.IE)
             _uploadForm.encoding = "multipart/form-data";
         else
             _uploadForm.enctype = "multipart/form-data";
@@ -131,14 +128,14 @@ IsBrowser = {
         
         _fileUploadElement.style.fontSize = "1000px";
         
-        if (IsBrowser.IE)
+        if (_isBrowser.IE)
         {
             _fileUploadElement.style.position = "relative";
             _fileUploadElement.style.top = "-10px";
             _fileUploadElement.style.left = "-10px";
             _fileUploadElement.style.width = "1px";
         }
-        else if (IsBrowser.Opera)
+        else if (_isBrowser.Opera)
         {
             _fileUploadElement.style.position = "relative";
             _fileUploadElement.style.top = "0px";
@@ -230,8 +227,12 @@ IsBrowser = {
 
     if(_fileUploadElement.files)
     {
-        for(var i = 0; i < _fileUploadElement.files.length; i++)
+        var i = 0;
+        var length = _fileUploadElement.files.length;
+        console.log("length = " + length);
+        for(; i < length; i++)
         {
+            console.log("for i: " + i + " filename: " + _fileUploadElement.files.item(i).fileName);
             [selection addObject:_fileUploadElement.files.item(i).fileName];
         }
     }
@@ -305,7 +306,7 @@ IsBrowser = {
         _DOMIFrameElement = nil;   
     }
     
-    if(IsBrowser.IE)
+    if(_isBrowser.IE)
     {
         _DOMIFrameElement = document.createElement("<iframe id=\"" + _uploadForm.target + "\" name=\"" + _uploadForm.target + "\" />");    
         
@@ -347,7 +348,7 @@ IsBrowser = {
         }
     }    
         
-    if(IsBrowser.IE)
+    if(_isBrowser.IE)
     {
         _DOMIFrameElement.onreadystatechange = function() 
         {
