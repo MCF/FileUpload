@@ -142,6 +142,7 @@
             _fileUploadElement.style.left = "0px";
             _fileUploadElement.style.width = "100%";
             _fileUploadElement.style.height = "100%";
+            _fileUploadElement.style.border = "none";
         }
         else
         {
