@@ -37,7 +37,7 @@ files served and the POST must be identical or the code will not work correctly
 cannot be read by the FileUpload code).
 
 The current sample application will post back to the /file_upload directory on
-the same server used to server the application.  Change the setURL call in
+the same server used to serve the application.  Change the setURL: call in
 AppController.j if you need to post to a different directory.
 
 *Additional Information*
