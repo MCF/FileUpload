@@ -230,9 +230,15 @@
     {
         var i = 0;
         var length = _fileUploadElement.files.length;
+        var fileName;
+
         for(; i < length; i++)
         {
-            [selection addObject:_fileUploadElement.files.item(i).fileName];
+            fileName = _fileUploadElement.files.item(i).name
+            if (! fileName && _fileUploadElement.files.item(i).fileName)
+                fileName = _fileUploadElement.files.item(i).fileName
+
+            [selection addObject:fileName];
         }
     }
     else
