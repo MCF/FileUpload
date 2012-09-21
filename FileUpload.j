@@ -10,154 +10,160 @@
 @import <Foundation/CPValue.j>
 @import <Foundation/CPException.j>
 
+// Local constants
+var kHRClassAttributesUsernameKey      = @"username"
+var kHRClassAttributesPasswordKey      = @"password"
+
 @implementation UploadButton : CPButton
 {
-    DOMElement      _DOMIFrameElement;
-    DOMElement      _fileUploadElement;
-    DOMElement      _uploadForm;
-
-    function        _mouseMovedCallback;
-    function        _mouseUpCallback;
-
-    id              _delegate;
-
-    CPDictionary    _parameters;
-    var             _isBrowser;
+    DOMElement          _DOMIFrameElement;
+    DOMElement          _fileUploadElement;
+    DOMElement          _uploadForm;
+    
+    function            _mouseMovedCallback;
+    function            _mouseUpCallback;
+    
+    id                  _delegate;
+    
+    CPDictionary        _parameters;
+    var                 _isBrowser;
+    
+    CPMutableDictionary _authDict;
 }
 
 - (void)setup
 {
-            // Determine which browser is being used.
-
-        _isBrowser = {
-            IE:     !!(window.attachEvent && !window.opera),
-            Opera:  !!window.opera,
-            WebKit: navigator.userAgent.indexOf('AppleWebKit/') > -1,
-            Gecko:  navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('KHTML') == -1
-        };
-
-        _uploadForm = document.createElement("form");
-
-        _uploadForm.method = "POST";
-        _uploadForm.action = "#";
-
-        if(_isBrowser.IE)
-            _uploadForm.encoding = "multipart/form-data";
-        else
-            _uploadForm.enctype = "multipart/form-data";
-
-        _fileUploadElement = document.createElement("input");
-
-        _fileUploadElement.type = "file";
-        _fileUploadElement.name = "file[]";
-
-        _fileUploadElement.onmousedown = function(aDOMEvent)
+    // Determine which browser is being used.
+    
+    _isBrowser = {
+    IE:     !!(window.attachEvent && !window.opera),
+    Opera:  !!window.opera,
+    WebKit: navigator.userAgent.indexOf('AppleWebKit/') > -1,
+    Gecko:  navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('KHTML') == -1
+    };
+    
+    _uploadForm = document.createElement("form");
+    
+    _uploadForm.method = "POST";
+    _uploadForm.action = "#";
+    
+    if(_isBrowser.IE)
+        _uploadForm.encoding = "multipart/form-data";
+    else
+        _uploadForm.enctype = "multipart/form-data";
+    
+    _fileUploadElement = document.createElement("input");
+    
+    _fileUploadElement.type = "file";
+    _fileUploadElement.name = "file";
+    
+    _fileUploadElement.onmousedown = function(aDOMEvent)
+    {
+        aDOMEvent = aDOMEvent || window.event;
+        
+        var x = aDOMEvent.clientX,
+        y = aDOMEvent.clientY,
+        theWindow = [self window];
+        
+        [CPApp sendEvent:[CPEvent mouseEventWithType:CPLeftMouseDown location:[theWindow convertBridgeToBase:CGPointMake(x, y)]
+                                       modifierFlags:0 timestamp:0 windowNumber:[theWindow windowNumber] context:nil eventNumber:-1 clickCount:1 pressure:0]];
+        [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
+        
+        if (document.addEventListener)
         {
-            aDOMEvent = aDOMEvent || window.event;
-
-            var x = aDOMEvent.clientX,
-                y = aDOMEvent.clientY,
-                theWindow = [self window];
-
-            [CPApp sendEvent:[CPEvent mouseEventWithType:CPLeftMouseDown location:[theWindow convertBridgeToBase:CGPointMake(x, y)]
-                modifierFlags:0 timestamp:0 windowNumber:[theWindow windowNumber] context:nil eventNumber:-1 clickCount:1 pressure:0]];
-            [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
-
-            if (document.addEventListener)
-            {
-                document.addEventListener(CPDOMEventMouseUp, _mouseUpCallback, NO);
-                document.addEventListener(CPDOMEventMouseMoved, _mouseMovedCallback, NO);
-            }
-            else if(document.attachEvent)
-            {
-                document.attachEvent("on" + CPDOMEventMouseUp, _mouseUpCallback);
-                document.attachEvent("on" + CPDOMEventMouseMoved, _mouseMovedCallback);
-            }
+            document.addEventListener(CPDOMEventMouseUp, _mouseUpCallback, NO);
+            document.addEventListener(CPDOMEventMouseMoved, _mouseMovedCallback, NO);
         }
-
-        _mouseUpCallback = function(aDOMEvent)
+        else if(document.attachEvent)
         {
-            if (document.removeEventListener)
-            {
-                document.removeEventListener(CPDOMEventMouseUp, _mouseUpCallback, NO);
-                document.removeEventListener(CPDOMEventMouseMoved, _mouseMovedCallback, NO);
-            }
-            else if(document.attachEvent)
-            {
-                document.detachEvent("on" + CPDOMEventMouseUp, _mouseUpCallback);
-                document.detachEvent("on" + CPDOMEventMouseMoved, _mouseMovedCallback);
-            }
-
-            aDOMEvent = aDOMEvent || window.event;
-
-            var x = aDOMEvent.clientX,
-                y = aDOMEvent.clientY,
-                theWindow = [self window];
-
-            [CPApp sendEvent:[CPEvent mouseEventWithType:CPLeftMouseUp location:[theWindow convertBridgeToBase:CGPointMake(x, y)]
-               modifierFlags:0 timestamp:0 windowNumber:[theWindow windowNumber] context:nil eventNumber:-1 clickCount:1 pressure:0]];
-            [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
+            document.attachEvent("on" + CPDOMEventMouseUp, _mouseUpCallback);
+            document.attachEvent("on" + CPDOMEventMouseMoved, _mouseMovedCallback);
         }
-
-        _mouseMovedCallback = function(aDOMEvent)
+    }
+    
+    _mouseUpCallback = function(aDOMEvent)
+    {
+        if (document.removeEventListener)
         {
-            aDOMEvent = aDOMEvent || window.event;
-
-            var x = aDOMEvent.clientX,
-                y = aDOMEvent.clientY,
-                theWindow = [self window];
-
-            [CPApp sendEvent:[CPEvent mouseEventWithType:CPLeftMouseDragged location:[theWindow convertBridgeToBase:CGPointMake(x, y)]
-               modifierFlags:0 timestamp:0 windowNumber:[theWindow windowNumber] context:nil eventNumber:-1 clickCount:1 pressure:0]];
+            document.removeEventListener(CPDOMEventMouseUp, _mouseUpCallback, NO);
+            document.removeEventListener(CPDOMEventMouseMoved, _mouseMovedCallback, NO);
         }
-
-        _uploadForm.style.position = "absolute";
-        _uploadForm.style.top = "0px";
-        _uploadForm.style.left = "0px";
-        _uploadForm.style.zIndex = 1000;
-
-        _fileUploadElement.style.opacity = "0";
-        _fileUploadElement.style.filter = "alpha(opacity=0)";
-
-        _uploadForm.style.width = "100%";
-        _uploadForm.style.height = "100%";
-
-        _fileUploadElement.style.fontSize = "1000px";
-
-        if (_isBrowser.IE)
+        else if(document.attachEvent)
         {
-            _fileUploadElement.style.position = "relative";
-            _fileUploadElement.style.top = "-10px";
-            _fileUploadElement.style.left = "-10px";
-            _fileUploadElement.style.width = "1px";
+            document.detachEvent("on" + CPDOMEventMouseUp, _mouseUpCallback);
+            document.detachEvent("on" + CPDOMEventMouseMoved, _mouseMovedCallback);
         }
-        else if (_isBrowser.Opera)
-        {
-            _fileUploadElement.style.position = "relative";
-            _fileUploadElement.style.top = "0px";
-            _fileUploadElement.style.left = "0px";
-            _fileUploadElement.style.width = "100%";
-            _fileUploadElement.style.height = "100%";
-            _fileUploadElement.style.border = "none";
-        }
-        else
-        {
-            _fileUploadElement.style.cssFloat = "right";
-        }
-
-        _fileUploadElement.onchange = function()
-        {
-            [self uploadSelectionDidChange: [self selection]];
-        };
-
-        _uploadForm.appendChild(_fileUploadElement);
-
-        _DOMElement.appendChild(_uploadForm);
-
-        _parameters = [CPDictionary dictionary];
-
-        [self setBordered:NO];
-
+        
+        aDOMEvent = aDOMEvent || window.event;
+        
+        var x = aDOMEvent.clientX,
+        y = aDOMEvent.clientY,
+        theWindow = [self window];
+        
+        [CPApp sendEvent:[CPEvent mouseEventWithType:CPLeftMouseUp location:[theWindow convertBridgeToBase:CGPointMake(x, y)]
+                                       modifierFlags:0 timestamp:0 windowNumber:[theWindow windowNumber] context:nil eventNumber:-1 clickCount:1 pressure:0]];
+        [[CPRunLoop currentRunLoop] limitDateForMode:CPDefaultRunLoopMode];
+    }
+    
+    _mouseMovedCallback = function(aDOMEvent)
+    {
+        aDOMEvent = aDOMEvent || window.event;
+        
+        var x = aDOMEvent.clientX,
+        y = aDOMEvent.clientY,
+        theWindow = [self window];
+        
+        [CPApp sendEvent:[CPEvent mouseEventWithType:CPLeftMouseDragged location:[theWindow convertBridgeToBase:CGPointMake(x, y)]
+                                       modifierFlags:0 timestamp:0 windowNumber:[theWindow windowNumber] context:nil eventNumber:-1 clickCount:1 pressure:0]];
+    }
+    
+    _uploadForm.style.position = "absolute";
+    _uploadForm.style.top = "0px";
+    _uploadForm.style.left = "0px";
+    _uploadForm.style.zIndex = 1000;
+    
+    _fileUploadElement.style.opacity = "0";
+    _fileUploadElement.style.filter = "alpha(opacity=0)";
+    
+    _uploadForm.style.width = "100%";
+    _uploadForm.style.height = "100%";
+    
+    _fileUploadElement.style.fontSize = "1000px";
+    
+    if (_isBrowser.IE)
+    {
+        _fileUploadElement.style.position = "relative";
+        _fileUploadElement.style.top = "-10px";
+        _fileUploadElement.style.left = "-10px";
+        _fileUploadElement.style.width = "1px";
+    }
+    else if (_isBrowser.Opera)
+    {
+        _fileUploadElement.style.position = "relative";
+        _fileUploadElement.style.top = "0px";
+        _fileUploadElement.style.left = "0px";
+        _fileUploadElement.style.width = "100%";
+        _fileUploadElement.style.height = "100%";
+        _fileUploadElement.style.border = "none";
+    }
+    else
+    {
+        _fileUploadElement.style.cssFloat = "right";
+    }
+    
+    _fileUploadElement.onchange = function()
+    {
+        [self uploadSelectionDidChange: [self selection]];
+    };
+    
+    _uploadForm.appendChild(_fileUploadElement);
+    
+    _DOMElement.appendChild(_uploadForm);
+    
+    _parameters = [CPDictionary dictionary];
+    
+    [self setBordered:NO];
+    
 }
 - (id)initWithCoder:(CPCoder)aCoder
 {
@@ -172,12 +178,12 @@
 - (id)initWithFrame:(CGRect)aFrame
 {
     self = [super initWithFrame:aFrame];
-
+    
     if (self)
     {
         [self setup];
     }
-
+    
     return self;
 }
 
@@ -201,7 +207,7 @@
             _uploadForm.appendChild(_fileUploadElement);
         }
     }
-
+    
     [super setEnabled:isEnabled];
 }
 
@@ -209,7 +215,7 @@
 -(void)allowsMultipleFiles:(BOOL)allowsMultipleFiles
 {
     _fileUploadElement.removeAttribute("multiple");  // Start as single file.
-
+    
     if(allowsMultipleFiles)
     {
         _fileUploadElement.setAttribute("multiple", "true");
@@ -226,6 +232,16 @@
     return _delegate;
 }
 
+- (void)setAuthDict:(CPMutableDictionary)aAuthDict
+{
+    _authDict = aAuthDict;
+}
+
+- (CPMutableDictionary)authDict
+{
+    return _authDict;
+}
+
 - (void)setURL:(CPString)aURL
 {
     _uploadForm.action = aURL;
@@ -240,27 +256,27 @@
 - (CPArray)selection
 {
     var selection = [CPArray  array];
-
+    
     if(_fileUploadElement.files)
     {
         var i = 0;
         var length = _fileUploadElement.files.length;
         var fileName;
-
+        
         for(; i < length; i++)
         {
             fileName = _fileUploadElement.files.item(i).name
             if (! fileName && _fileUploadElement.files.item(i).fileName)
                 fileName = _fileUploadElement.files.item(i).fileName
-
-            [selection addObject:fileName];
+                
+                [selection addObject:fileName];
         }
     }
     else
     {
         [selection addObject:_fileUploadElement.value];
     }
-
+    
     return selection;
 }
 
@@ -273,7 +289,7 @@
 {
     if ([_delegate respondsToSelector:@selector(uploadButton:didFinishUploadWithData:)])
         [_delegate uploadButton: self didFinishUploadWithData: response];
-
+    
 }
 
 - (void)uploadDidFailWithError:(CPString)anError
@@ -286,9 +302,9 @@
 {
     if(aParam == "file")
         return NO;
-
+    
     [_parameters setObject:aValue forKey:aParam];
-
+    
     return YES;
 }
 
@@ -297,39 +313,60 @@
     return _parameters;
 }
 
+- (void)addHeader
+{
+    if ( [self authDict] )
+    {
+        // Very interesting way to encode string into UTF-8
+        // see: http://ecmanaut.blogspot.de/2006/07/encoding-decoding-utf8-in-javascript.html
+        var username = unescape( encodeURIComponent([[self authDict] objectForKey:kHRClassAttributesUsernameKey]) );
+        var password = unescape( encodeURIComponent([[self authDict] objectForKey:kHRClassAttributesPasswordKey]) );
+        var secret = [[CPString stringWithFormat:@"%@:%@", username, password] encodeBase64];
+        var authorization = [CPString stringWithFormat:@"Basic %@", secret];
+        
+        [self setValue:authorization forParameter:@"authorization"];
+        
+        [self setAuthDict:nil];
+    }
+    
+}
+
 - (void)submit
 {
     _uploadForm.target = "FRAME_"+(new Date());
-
+    
     //remove existing parameters
     [self _removeUploadFormElements];
-
+    
+    //add header (when available -> must be set before)
+    [self addHeader];
+    
     //append the parameters to the form
     var keys = [_parameters allKeys];
     for(var i = 0, count = keys.length; i<count; i++)
     {
         var element = document.createElement("input");
-
+        
         element.type = "hidden";
         element.name = keys[i];
         element.value = [_parameters objectForKey:keys[i]];
-
+        
         _uploadForm.appendChild(element);
     }
-
+    
     _uploadForm.appendChild(_fileUploadElement);
-
+    
     if(_DOMIFrameElement)
     {
         document.body.removeChild(_DOMIFrameElement);
         _DOMIFrameElement.onload = nil;
         _DOMIFrameElement = nil;
     }
-
+    
     if(_isBrowser.IE)
     {
         _DOMIFrameElement = document.createElement("<iframe id=\"" + _uploadForm.target + "\" name=\"" + _uploadForm.target + "\" />");
-
+        
         if(window.location.href.toLowerCase().indexOf("https") === 0)
             _DOMIFrameElement.src = "javascript:false";
     }
@@ -338,24 +375,24 @@
         _DOMIFrameElement = document.createElement("iframe");
         _DOMIFrameElement.name = _uploadForm.target;
     }
-
+    
     _DOMIFrameElement.style.width = "1px";
     _DOMIFrameElement.style.height = "1px";
     _DOMIFrameElement.style.zIndex = -1000;
     _DOMIFrameElement.style.opacity = "0";
     _DOMIFrameElement.style.filter = "alpha(opacity=0)";
-
+    
     document.body.appendChild(_DOMIFrameElement);
-
+    
     _onloadHandler = function()
     {
         try
         {
             var responseText = _DOMIFrameElement.contentWindow.document.body ? _DOMIFrameElement.contentWindow.document.body.innerHTML :
-                                                                               _DOMIFrameElement.contentWindow.document.documentElement.textContent;
-
+            _DOMIFrameElement.contentWindow.document.documentElement.textContent;
+            
             [self uploadDidFinishWithResponse: responseText];
-
+            
             window.parent.setTimeout(function(){
                 document.body.removeChild(_DOMIFrameElement);
                 _DOMIFrameElement.onload = nil;
@@ -367,7 +404,7 @@
             [self uploadDidFailWithError:e];
         }
     }
-
+    
     if(_isBrowser.IE)
     {
         _DOMIFrameElement.onreadystatechange = function()
@@ -376,11 +413,11 @@
                 _onloadHandler();
         }
     }
-
+    
     _DOMIFrameElement.onload = _onloadHandler;
-
+    
     _uploadForm.submit();
-
+    
     if ([_delegate respondsToSelector:@selector(uploadButtonDidBeginUpload:)])
         [_delegate uploadButtonDidBeginUpload:self];
 }
