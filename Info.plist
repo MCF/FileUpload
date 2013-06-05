@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CPApplicationDelegateClass</key>
-	<string>AppController</string>
+	<string>FileUploadAppController</string>
 	<key>CPBundleName</key>
 	<string>FileUpload-tests</string>
 	<key>CPPrincipalClass</key>
