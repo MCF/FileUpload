@@ -1,10 +1,11 @@
-**Update:** This project was always meant to be a stopgap solution until a more
-fully featured Cappuccino file upload solution arrived.  Happily, as of May
-2013, a new file upload framework called Cup has been introduced by one of the
-core developers of Cappuccino.  I would suggest you try out Cup first before
-using this one.  Additional Cup information:
+**Update:** This project was always meant to be a stop-gap solution until a
+more fully featured Cappuccino file upload solution arrived.  Happily, as of
+May 2013, a new file upload framework called Cup has been introduced by one of
+the core developers of Cappuccino.  I would suggest you try out Cup first
+before using this one.  Additional Cup information:
 
 * [Cup Framework on github](https://github.com/aparajita/Cup)
+
 * The initial [blog post](http://www.cappuccino-project.org/blog/2013/05/cup-the-file-upload-framework.html)
 
 ## Introduction.
@@ -45,12 +46,12 @@ files served and the POST must be identical or the code will not work correctly
 cannot be read by the FileUpload code).
 
 The current sample application will post back to the /file\_upload directory on
-the same server used to serve the application.  Change the setURL: call in
+the same server used to serve the application.  Change the _setURL_ call in
 AppController.j if you need to post to a different directory.
 
 ## Additional Information
 
 See the github page and the wiki for additional documentation:
 
-http://github.com/MCF/FileUpload
+http://github.com/MCF/FileUpload  
 http://wiki.github.com/MCF/FileUpload/
