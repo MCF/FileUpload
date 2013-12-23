@@ -10,9 +10,9 @@
 @import "FileUpload.j"
 
 
-@implementation AppController : CPObject
+@implementation FileUploadAppController : CPObject
 {
-    TextDisplay statusDisplay;
+    FileUploadTextDisplay statusDisplay;
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
@@ -38,7 +38,7 @@
     [urlLabel setSelectable:YES];
     [contentView addSubview:urlLabel];
 
-    statusDisplay = [[TextDisplay alloc] initWithFrame:CGRectMake(10, 90, 500, 300)];
+    statusDisplay = [[FileUploadTextDisplay alloc] initWithFrame:CGRectMake(10, 90, 500, 300)];
     [contentView addSubview:statusDisplay];
 
     [theWindow orderFront:self];
@@ -71,7 +71,7 @@
 
 @end
 
-@implementation TextDisplay: CPWebView
+@implementation FileUploadTextDisplay: CPWebView
 {
     CPString currentString;
 }
@@ -83,7 +83,7 @@
     {
         currentString = "";
     }
-    
+
     return self;
 }
 
