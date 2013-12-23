@@ -5,7 +5,6 @@ the core developers of Cappuccino.  I would suggest you try out Cup first
 before using this one.  Additional Cup information:
 
 * [Cup Framework on github](https://github.com/aparajita/Cup)
-
 * The initial [blog post](http://www.cappuccino-project.org/blog/2013/05/cup-the-file-upload-framework.html)
 
 ## Introduction.
@@ -13,7 +12,7 @@ before using this one.  Additional Cup information:
 This small project supplies a class to perform file upload using the Cappuccino
 web framework:
 
-http://www.cappuccino-project.org/
+http://www.cappuccino-project.org/  
 https://github.com/cappuccino/cappuccino
 
 This file upload project is a fork of the following gist code:
